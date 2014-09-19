@@ -33,6 +33,12 @@ cv::Mat skinCrCbHist = cv::Mat::zeros(cv::Size(256, 256), CV_8UC1);
 */
 int main( int argc, const char** argv ) {
     cv::VideoCapture capture;
+    capture.open(0);
+    if (!capture.isOpened()) {
+        printf("Can't open camera\n");
+        return 1;
+    }
+
     cv::Mat frame;
 
     // Load the cascades
@@ -56,31 +62,27 @@ int main( int argc, const char** argv ) {
         43.0, 0.0, 360.0, cv::Scalar(255, 255, 255), -1);
 
     // Read the video stream
-    capture.open(0);
-    if( capture.isOpened() ) {
-        while( true ) {
-            capture >> frame;
-            // mirror it
-            cv::flip(frame, frame, 1);
-            frame.copyTo(debugImage);
+    while (true) {
+        capture >> frame;
+        // mirror it
+        cv::flip(frame, frame, 1);
+        frame.copyTo(debugImage);
 
-            // Apply the classifier to the frame
-            if( !frame.empty() ) {
-                detectAndDisplay( frame );
-            }
-            else {
-                printf(" --(!) No captured frame -- Break!");
-                break;
-            }
+        // Apply the classifier to the frame
+        if (!frame.empty()) {
+            detectAndDisplay( frame );
+        }
+        else {
+            printf(" --(!) No captured frame -- Break!");
+            break;
+        }
 
-            imshow(main_window_name,debugImage);
+        imshow(main_window_name,debugImage);
 
-            int c = cv::waitKey(10);
-            if( (char)c == 'c' ) { break; }
-            if( (char)c == 'f' ) {
-                imwrite("frame.png",frame);
-            }
-
+        int c = cv::waitKey(1);
+        if( (char)c == 'c' ) { break; }
+        if( (char)c == 'f' ) {
+            imwrite("frame.png",frame);
         }
     }
 
@@ -208,7 +210,7 @@ void detectAndDisplay( cv::Mat frame ) {
         0|cv::CASCADE_SCALE_IMAGE|cv::CASCADE_FIND_BIGGEST_OBJECT, cv::Size(150, 150) );
     //  findSkin(debugImage);
 
-    for( int i = 0; i < faces.size(); i++ )
+    for (int i = 0; i < faces.size(); i++)
     {
         rectangle(debugImage, faces[i], 1234);
     }
