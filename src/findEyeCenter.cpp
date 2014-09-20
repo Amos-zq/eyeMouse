@@ -14,7 +14,6 @@
 // Pre-declarations
 cv::Mat floodKillEdges(cv::Mat &mat);
 
-#pragma mark Visualization
 /*
 template<typename T> mglData *matToData(const cv::Mat &mat) {
 mglData *data = new mglData(mat.cols,mat.rows);
@@ -42,12 +41,11 @@ delete yData;
 delete imgData;
 }*/
 
-#pragma mark Helpers
 
 cv::Point unscalePoint(cv::Point p, cv::Rect origSize) {
     float ratio = (((float)kFastEyeWidth)/origSize.width);
-    int x = /*round*/(p.x / ratio);
-    int y = /*round*/(p.y / ratio);
+    int x = cvRound(p.x / ratio);
+    int y = cvRound(p.y / ratio);
     return cv::Point(x,y);
 }
 
@@ -71,8 +69,6 @@ cv::Mat computeMatXGradient(const cv::Mat &mat) {
 
     return out;
 }
-
-#pragma mark Main Algorithm
 
 void testPossibleCentersFormula(int x, int y, unsigned char weight,double gx, double gy, cv::Mat &out) {
     // for all possible centers
@@ -189,8 +185,6 @@ cv::Point findEyeCenter(cv::Mat face, cv::Rect eye, std::string debugWindow) {
     }
     return unscalePoint(maxP,eye);
 }
-
-#pragma mark Postprocessing
 
 bool floodShouldPushPoint(const cv::Point &np, const cv::Mat &mat) {
     return inMat(np, mat.rows, mat.cols);

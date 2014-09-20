@@ -11,8 +11,8 @@
 
 #include "findEyeCorner.h"
 
-cv::Mat *leftCornerKernel;
-cv::Mat *rightCornerKernel;
+cv::Mat leftCornerKernel;
+cv::Mat rightCornerKernel;
 
 // not constant because stupid opencv type signatures
 float kEyeCornerKernel[4][6] = {
@@ -23,15 +23,10 @@ float kEyeCornerKernel[4][6] = {
 };
 
 void createCornerKernels() {
-    rightCornerKernel = new cv::Mat(4,6,CV_32F,kEyeCornerKernel);
-    leftCornerKernel = new cv::Mat(4,6,CV_32F);
+    rightCornerKernel = cv::Mat(4,6,CV_32F,kEyeCornerKernel);
+    leftCornerKernel = cv::Mat(4,6,CV_32F);
     // flip horizontally
-    cv::flip(*rightCornerKernel, *leftCornerKernel, 1);
-}
-
-void releaseCornerKernels() {
-    delete leftCornerKernel;
-    delete rightCornerKernel;
+    cv::flip(rightCornerKernel, leftCornerKernel, 1);
 }
 
 // TODO implement these
@@ -45,7 +40,7 @@ cv::Mat eyeCornerMap(const cv::Mat &region, bool left, bool left2) {
     cv::Mat miRegion(region, rowRange, colRange);
 
     cv::filter2D(miRegion, cornerMap, CV_32F,
-        (left && !left2) || (!left && !left2) ? *leftCornerKernel : *rightCornerKernel);
+        (left && !left2) || (!left && !left2) ? leftCornerKernel : rightCornerKernel);
 
     return cornerMap;
 }
