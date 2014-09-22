@@ -11,7 +11,7 @@
 #include "findEyeCenter.h"
 #include "findEyeCorner.h"
 
-#if WIN32
+#ifdef WIN32
 #include <Windows.h>
 #else
 #include "x11util.h"
@@ -69,7 +69,7 @@ int main( int argc, const char** argv ) {
     float targetMouseX = 0;
     float targetMouseY = 0;
 
-#if !WIN32
+#ifndef WIN32
     X11Util m_x11Util;
 #endif
 
@@ -88,7 +88,7 @@ int main( int argc, const char** argv ) {
 
         detectAndDisplay(raw);
 
-#if WIN32
+#ifdef WIN32
         ::SetCursorPos(rightPupil.x, rightPupil.y);
 #else
         m_x11Util.SetCursorPos(rightPupil.x, rightPupil.y);
