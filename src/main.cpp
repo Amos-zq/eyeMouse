@@ -11,7 +11,11 @@
 #include "findEyeCenter.h"
 #include "findEyeCorner.h"
 
+#ifdef WIN32
 #include <Windows.h>
+#else
+#include "x11util.h"
+#endif
 
 /** Function Headers */
 void detectAndDisplay( cv::Mat frame );
@@ -65,6 +69,10 @@ int main( int argc, const char** argv ) {
     float targetMouseX = 0;
     float targetMouseY = 0;
 
+#ifndef WIN32
+    X11Util m_x11Util;
+#endif
+
     // Read the video stream
     while (true) {
         capture >> raw;
@@ -80,7 +88,11 @@ int main( int argc, const char** argv ) {
 
         detectAndDisplay(raw);
 
+#ifdef WIN32
         ::SetCursorPos(rightPupil.x, rightPupil.y);
+#else
+        m_x11Util.SetCursorPos(rightPupil.x, rightPupil.y);
+#endif
 
         imshow(main_window_name,mainFrame);
 
